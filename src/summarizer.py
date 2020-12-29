@@ -8,6 +8,7 @@ from utils import (nlp,
 import numpy as np
 import time
 
+
 """
 TODOS:
 1. Convert this into a FastAPI API.
@@ -18,25 +19,39 @@ TODOS:
 """
 
 FOLDER = 'test-2'
-text = load_data(FOLDER)
-start = time.time()
-doc = nlp(text)
 
-sentences = np.array([sanitize_original(sent.text) for sent in doc.sents])
-sentences_for_tfidf = sanitize_for_model(sentences)
+def get_summary(data, debug = False, folder = False, THRESHOLD = 1):
+
+    if debug:
+        start = time.time()
+
+    if folder:
+        text = load_data(data)
+    else:
+        text = data
+    doc = nlp(text)
+
+    sentences = np.array([sanitize_original(sent.text) for sent in doc.sents])
+    sentences_for_tfidf = sanitize_for_model(sentences)
 
 
-res = get_TFIDF(sentences_for_tfidf)
-THRESHOLD = 1
+    res = get_TFIDF(sentences_for_tfidf)
 
-summary = sentences[find_sentences(res, THRESHOLD)].tolist()
-time_taken = time.time() - start
+    summary = sentences[find_sentences(res, THRESHOLD)].tolist()
+    if debug:
+        time_taken = time.time() - start
 
-output = {
-    'summary': summary,
-    'time_taken': time_taken,
-    'total_lines': len(sentences),
-    'compressed_percent': round((len(summary) / len(sentences)) * 100, 2),
-    'threshold_used': THRESHOLD
-}
-write_data('test-2', FOLDER)
+        output = {
+            'summary': summary,
+            'total_lines': len(sentences),
+            'compressed_percent': round((len(summary) / len(sentences)) * 100, 2),
+            'threshold_used': THRESHOLD,
+            'time_taken': time_taken,
+        }
+        if folder:
+            write_data(data, output)
+            return f'Data written to data/{FOLDER}/out.json'
+        return output
+
+    else:
+        return summary
