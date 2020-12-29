@@ -65,13 +65,13 @@ def get_TFIDF(sents):
 
 
 def load_data(fname):
-    f = open(f'../data/{fname}/inp.txt')
+    f = open(f'data/{fname}/inp.txt')
     data = f.read()
     f.close()
     return data
 
 
 def write_data(fname, data):
-    f = open(f'../data/{fname}/out.json', 'w')
+    f = open(f'data/{fname}/out.json', 'w')
     dump(data, f, indent=4)
     return f.close()

@@ -1,4 +1,4 @@
-from utils import (nlp,
+from .utils import (nlp,
                   find_sentences,
                   sanitize_for_model,
                   sanitize_original,
@@ -9,14 +9,6 @@ import numpy as np
 import time
 
 
-"""
-TODOS:
-1. Convert this into a FastAPI API.
-2. Test the algorithm better.
-3. Better sanitization of text.
-4. Figure out `threshold` for effective summarization.
-5. Make it more effecient.
-"""
 
 FOLDER = 'test-2'
 
