@@ -10,8 +10,6 @@ import time
 
 
 
-FOLDER = 'test-2'
-
 def get_summary(data, debug = False, folder = False, THRESHOLD = 1):
 
     if debug:
