@@ -5,6 +5,7 @@ Python : tested with 3.7.3
 1st run:
 ```sh
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 python manage.py migrate
 ```
 
