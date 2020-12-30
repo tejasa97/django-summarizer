@@ -1,8 +1,10 @@
 # django-summarizer
 
+Python : tested with 3.7.3
 
 1st run:
 ```sh
+pip install -r requirements.txt
 python manage.py migrate
 ```
 
