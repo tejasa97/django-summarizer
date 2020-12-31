@@ -45,3 +45,5 @@ def get_summary(data, debug = False, folder = False, THRESHOLD = 1):
 
     else:
         return summary
+
+get_summary('test-2', debug = True)
