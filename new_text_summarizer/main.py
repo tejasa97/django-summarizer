@@ -1,5 +1,4 @@
-from summarizer import get_summary
-from pprint import pprint
+from .summarizer import get_summary
 
 text = "test-2"
 
