@@ -6,7 +6,7 @@ from core.celery import celery
 from users.models import User
 from .managers import SummarizationManager
 
-from text_summarizer import get_summary
+from summarizer_service import get_summary
 
 
 class PatchedCeleryTask(celery.Task):
