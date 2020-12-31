@@ -132,5 +132,6 @@ class Summary(models.Model):
             'summary': self.summary,
             'website_icon_url': self.website_icon_url,
             'page_url': self.page_url,
-            'webpage_title': self.webpage_title
+            'webpage_title': self.webpage_title,
+            'created': self.created.isoformat()
         }
