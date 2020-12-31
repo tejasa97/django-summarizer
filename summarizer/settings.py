@@ -88,6 +88,7 @@ WSGI_APPLICATION = 'summarizer.wsgi.application'
 
 
 # Database
+DATABASES = {}
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
