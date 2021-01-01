@@ -55,3 +55,5 @@ vine==5.0.0
 wasabi==0.8.0
 wcwidth==0.2.5
 zipp==3.4.0
+gunicorn==20.0.4
+django-cors-headers==3.6.0
