@@ -133,5 +133,6 @@ class Summary(models.Model):
             'website_icon_url': self.website_icon_url,
             'page_url': self.page_url,
             'webpage_title': self.webpage_title,
-            'created': self.created.isoformat()
+            'created': self.created.isoformat(),
+            'saved': self.save_summary
         }

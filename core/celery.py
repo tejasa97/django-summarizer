@@ -10,3 +10,10 @@ celery = Celery('core')
 celery.config_from_object('django.conf:settings', namespace='CELERY')
 celery.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 celery.conf.broker_transport_options = {'visibility_timeout': 43200}  # 12 hours.
+
+celery.conf.beat_schedule = {
+    'delete_unsaved_summaries': {
+        'task': 'summarizer_app.tasks.delete_unsaved_summaries',
+        'schedule': 3600,
+    },
+}
