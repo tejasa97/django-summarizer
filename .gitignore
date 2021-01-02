@@ -1,0 +1,4 @@
+*.pyc
+celerybeat-*
+db.sqlite3
+dump.rdb

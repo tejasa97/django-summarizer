@@ -69,9 +69,9 @@ class Summary(models.Model):
     summary_id = models.CharField(max_length=8, unique=True)
     celery_task = models.ForeignKey(SummarizerTask, on_delete=models.CASCADE)
     summary = models.TextField()
-    website_icon_url = models.CharField(max_length=128)
-    page_url = models.CharField(max_length=64)
-    webpage_title = models.CharField(max_length=64)
+    website_icon_url = models.CharField(max_length=512)
+    page_url = models.CharField(max_length=512)
+    webpage_title = models.CharField(max_length=512)
 
     created = models.DateTimeField(auto_now_add=True)
     save_summary = models.BooleanField(default=False)
@@ -90,7 +90,7 @@ class Summary(models.Model):
             celery_task=summarization_task,
             website_icon_url=website_icon_url,
             page_url=page_url,
-            webpage_title=webpage_title
+            webpage_title=webpage_title,
         )
 
         return summary_obj.summary_id
@@ -133,5 +133,6 @@ class Summary(models.Model):
             'website_icon_url': self.website_icon_url,
             'page_url': self.page_url,
             'webpage_title': self.webpage_title,
-            'created': self.created.isoformat()
+            'created': self.created.isoformat(),
+            'saved': self.save_summary
         }

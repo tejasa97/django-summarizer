@@ -1,0 +1,52 @@
+version: '3.4'
+
+volumes:
+    # postgres_db:
+    #     name: 'postgres_db'
+    redis_db:
+        name: 'redis_dump'
+
+services:
+    api_server:
+        image: api_server
+        container_name: api-server
+        build: ./
+        # command: >
+        #     bash -c "python wait_for_postgres.py &&
+        #     flask db upgrade &&
+        #     gunicorn --bind 0.0.0.0:5000 --access-logfile - wsgi:app"
+        # command: sh -c "wait-for postgres:5432 && python manage.py migrate && gunicorn mysite.wsgi -b 0.0.0.0:5000"
+        command: sh -c "python manage.py migrate && gunicorn mysite.wsgi -b 0.0.0.0:5000"
+        depends_on:
+            - redis
+            # - postgres
+        # env_file:
+        #     - ./.env
+        restart: always
+
+    redis:
+        image: redis:alpine3.12
+        container_name: redis
+        volumes:
+            - "redis_db:/data"
+        restart: always
+
+    # postgres:
+    #     image: "postgres:12-alpine"
+    #     environment:
+    #         PGDATA: "/var/lib/postgresql/data/pgdata"
+    #     volumes:
+    #         - "postgres_db:/var/lib/postgresql/data"
+    #     env_file:
+    #         - ./.env
+    #     restart: always
+
+    # nginx:
+    #     image: nginx:alpine
+    #     container_name: nginx
+    #     ports:
+    #         - "80:80"
+    #     volumes:
+    #         - ./nginx:/etc/nginx/conf.d
+    #     depends_on:
+    #         - api_server
