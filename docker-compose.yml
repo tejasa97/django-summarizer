@@ -1,52 +1,78 @@
 version: '3.4'
 
-volumes:
-    # postgres_db:
-    #     name: 'postgres_db'
-    redis_db:
-        name: 'redis_dump'
-
 services:
-    api_server:
-        image: api_server
-        container_name: api-server
-        build: ./
-        # command: >
-        #     bash -c "python wait_for_postgres.py &&
-        #     flask db upgrade &&
-        #     gunicorn --bind 0.0.0.0:5000 --access-logfile - wsgi:app"
-        # command: sh -c "wait-for postgres:5432 && python manage.py migrate && gunicorn mysite.wsgi -b 0.0.0.0:5000"
-        command: sh -c "python manage.py migrate && gunicorn mysite.wsgi -b 0.0.0.0:5000"
-        depends_on:
-            - redis
-            # - postgres
-        # env_file:
-        #     - ./.env
-        restart: always
 
-    redis:
-        image: redis:alpine3.12
-        container_name: redis
-        volumes:
-            - "redis_db:/data"
-        restart: always
+  redis:
+    image: "redis:alpine"
+    container_name: "redis"
+    restart: on-failure
 
-    # postgres:
-    #     image: "postgres:12-alpine"
-    #     environment:
-    #         PGDATA: "/var/lib/postgresql/data/pgdata"
-    #     volumes:
-    #         - "postgres_db:/var/lib/postgresql/data"
-    #     env_file:
-    #         - ./.env
-    #     restart: always
+  postgres:
+    image: "postgres:12-alpine"
+    container_name: postgres
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - "postgresql-data:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+    env_file:
+        - ./.env
+    restart: on-failure
 
-    # nginx:
-    #     image: nginx:alpine
-    #     container_name: nginx
-    #     ports:
-    #         - "80:80"
-    #     volumes:
-    #         - ./nginx:/etc/nginx/conf.d
-    #     depends_on:
-    #         - api_server
+  api_server: 
+    image: "summarizer_api_server"
+    build: ./
+    command: >
+      bash -c "./wait-for.sh postgres:5432 &&
+      ./manage.py migrate &&
+      ./manage.py runserver 0.0.0.0:8000"
+    # volumes:
+    #   - "./:/code"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - "postgres"
+      - "redis"
+    env_file:
+      - ./.env
+
+  celery_worker:
+    command: sh -c "./wait-for.sh redis:6379 && ./wait-for.sh api_server:8000 -- celery -A core worker -l info"
+    container_name: celery_worker
+    depends_on:
+      - api_server
+      - postgres
+      - redis
+    # deploy:
+    #   replicas: 1
+    #   restart_policy:
+    #     condition: on-failure
+    #   resources:
+    #     limits:
+    #       cpus: '0.50'
+    #       memory: 50M
+    #     reservations:
+    #       cpus: '0.25'
+    #       memory: 20M
+    hostname: celery_worker
+    image: summarizer_api_server
+    restart: on-failure
+    env_file:
+      - ./.env
+
+  celery_beat:
+    command: sh -c "./wait-for.sh redis:6379 && ./wait-for.sh api_server:8000 -- celery -A core beat -l info"
+    container_name: celery_beat
+    depends_on:
+      - api_server
+      - postgres
+      - redis
+    hostname: celery_beat
+    image: summarizer_api_server
+    restart: on-failure
+    env_file:
+      - ./.env
+
+volumes:
+  postgresql-data:

@@ -14,7 +14,9 @@ RUN pip install -r requirements.txt
 RUN apt-get purge -y --auto-remove gcc libc6-dev
 
 COPY . code
+# RUN mv wait-for /bin/wait-for
 WORKDIR code
+RUN chmod +x wait-for.sh
 
 EXPOSE 8000
 

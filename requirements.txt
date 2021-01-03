@@ -52,3 +52,4 @@ zipp==3.4.0
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.0/en_core_web_sm-2.2.0.tar.gz
 gunicorn==20.0.4
 django-cors-headers==3.6.0
+psycopg2-binary==2.8.6
