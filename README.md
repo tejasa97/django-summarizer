@@ -1,5 +1,8 @@
 # django-summarizer
 
+This is the backend for https://nuggets.vercel.app/
+More info coming soon
+
 Python : tested with 3.7.3
 
 1st run:
